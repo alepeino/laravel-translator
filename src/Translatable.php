@@ -292,10 +292,42 @@ trait Translatable
         return Config::get('app.fallback_locale');
     }
 
+    public function getTranslationsClass()
+    {
+        return new class () extends Model {
+            static $translationsTable;
+
+            public function getTable()
+            {
+                return static::$translationsTable;
+            }
+        };
+    }
+
+    public function getTranslationsTable()
+    {
+        $translationsClass = $this->getTranslationsClass();
+
+        if (is_string($translationsClass)) {
+            return (new $translationsClass())->getTable();
+        }
+
+        return strtolower(class_basename($this).'_translations');
+    }
+
     /**
      * Get the translations relation.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    abstract public function translations(): HasMany;
+    public function translations(): HasMany
+    {
+        $translationsClass = $this->getTranslationsClass();
+
+        if (is_object($translationsClass)) {
+            $translationsClass::$translationsTable = $this->getTranslationsTable();
+        }
+
+        return $this->hasMany($translationsClass);
+    }
 }

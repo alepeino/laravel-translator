@@ -12,34 +12,27 @@
 namespace Vinkla\Tests\Translator;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Vinkla\Translator\Translatable;
 
 /**
- * This is the article eloquent model class.
+ * This is the country eloquent model class.
  *
- * @author Vincent Klaiber <hello@vinkla.com>
+ * @author Alejandro Peinó <alepeino@gmail.com>
  */
-class Article extends Model
+class Country extends Model
 {
     use Translatable;
 
-    /**
-     * A list of methods protected from mass assignment.
-     *
-     * @var string[]
-     */
-    protected $guarded = ['_token', '_method'];
+    protected $primaryKey = 'code';
+
+    public $incrementing = false;
+
+    public $timestamps = false;
 
     /**
      * List of translated attributes.
      *
      * @var string[]
      */
-    protected $translatable = ['title'];
-
-    public function getTranslationsClass(): string
-    {
-        return ArticleTranslation::class;
-    }
+    protected $translatable = ['name'];
 }
